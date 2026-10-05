@@ -9,5 +9,41 @@
   },
   "enabledMcpjsonServers": [
     "ponte-modelo"
-  ]
+  ],
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/runtime/mods/runtime-guarda/hooks/colisao.mjs\" pre",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/runtime/mods/runtime-guarda/hooks/raio.mjs\"",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/runtime/mods/runtime-guarda/hooks/colisao.mjs\" pos",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
 }

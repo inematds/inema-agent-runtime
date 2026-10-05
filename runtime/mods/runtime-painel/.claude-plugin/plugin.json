@@ -1,0 +1,9 @@
+{
+  "name": "runtime-painel",
+  "version": "0.3.0",
+  "description": "Painel do INEMA Agent Runtime: /painel mostra as sessões do time em segundo plano, com atualizar e parar.",
+  "author": { "name": "INEMA", "url": "https://inema.club" },
+  "homepage": "https://github.com/inematds/inema-agent-runtime",
+  "license": "MIT",
+  "types": "./types/index.d.ts"
+}

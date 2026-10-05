@@ -1,0 +1,8 @@
+{
+  "name": "runtime-guarda",
+  "version": "0.3.0",
+  "description": "Guarda do INEMA Agent Runtime: avisa antes de editar arquivo que outra sessão mexeu e mostra o que um comando vai apagar antes de apagar.",
+  "author": { "name": "INEMA", "url": "https://inema.club" },
+  "homepage": "https://github.com/inematds/inema-agent-runtime",
+  "license": "MIT"
+}
