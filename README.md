@@ -1,5 +1,9 @@
 # INEMA Agent Runtime
 
+**🇧🇷 [Português](README.md) · 🇺🇸 [English](README.en.md) · 🇪🇸 [Español](README.es.md)**
+
+[![INEMA Agent Runtime](guia/assets/banner.jpg)](https://inematds.github.io/inema-agent-runtime/guia/)
+
 Kit copiável para fazer seus agentes de IA (Claude Code e Codex) **descobrirem, conectarem e usarem** as ferramentas que você já tem, com regras claras do que podem fazer sozinhos.
 
 Não é plataforma nem servidor. É uma pasta `runtime/` com 4 arquivos de regras, scripts de diagnóstico e verificação, pontes, uma guarda e 7 receitas testadas. Funciona pela **assinatura** do Claude Code e/ou do Codex: nenhuma API paga é pré-requisito.

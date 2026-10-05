@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>INEMA Agent Runtime — your agents using the tools you already have</title>
+<meta name="description" content="A copyable kit for Claude Code and Codex to discover, connect to, and use your tools with a permissions policy. Works with your subscription, no paid API.">
+<link rel="alternate" hreflang="pt-BR" href="https://inematds.github.io/inema-agent-runtime/guia/">
+<link rel="alternate" hreflang="en" href="https://inematds.github.io/inema-agent-runtime/guia/en/">
+<link rel="alternate" hreflang="es" href="https://inematds.github.io/inema-agent-runtime/guia/es/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c0c10; --bg2:#14141b; --card:#16161e; --line:#272730;
+    --txt:#e9e9ee; --mut:#9a9aa6; --amb:#E2A23B; --amb2:#f0c070; --sky:#38bdf8; --pro:#cbd5e1;
+    color-scheme:dark;
+  }
+  body.light{
+    --bg:#f6f7f9; --bg2:#eceef2; --card:#ffffff; --line:#e1e3ea;
+    --txt:#1a1a22; --mut:#5b5b68; --amb:#b9791d; --amb2:#a16207; --sky:#0369a1; --pro:#b45309;
+    color-scheme:light;
+  }
+  body.light .hero .glow{opacity:.5}
+  body.light pre{background:#0e0e14;color:#d6d6e0}
+  body.light pre .c{color:#8a8a98}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.65 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:Sora,sans-serif;line-height:1.15;margin:0}
+  a{color:var(--amb);text-decoration:none}
+  code,pre{font-family:"JetBrains Mono",monospace}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 22px}
+  .mut{color:var(--mut)} .amb{color:var(--amb)}
+  .chip{display:inline-block;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--amb);font-weight:600;font-family:Sora}
+  nav{position:sticky;top:0;z-index:30;backdrop-filter:blur(12px);background:rgba(12,12,16,.78);border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex;align-items:center;gap:22px;height:60px}
+  nav .brand{display:flex;align-items:center;gap:8px;font-family:Sora;font-weight:800;letter-spacing:-.02em;color:var(--amb)}
+  nav .brand .emoji{font-size:1.25rem}
+  nav .sep{color:var(--mut);opacity:.45}
+  nav .inema{color:var(--sky);font-weight:600;font-size:.88rem;font-family:Sora}
+  nav .inema:hover{filter:brightness(1.15)}
+  nav .pro{color:var(--pro);font-weight:600;font-size:.88rem;font-family:Sora}
+  nav .pro:hover{filter:brightness(1.15)}
+  nav .clubpro{display:inline-flex;align-items:center;gap:6px}
+  nav .links{margin-left:auto;display:flex;align-items:center;gap:20px;font-size:.92rem}
+  nav .links a.sec{color:var(--mut)} nav .links a.sec:hover{color:var(--txt)}
+  .lang{display:inline-flex;gap:2px;font-family:Sora;font-size:.78rem}
+  .lang a{color:var(--mut);padding:.2em .45em;border-radius:6px} .lang a.on{color:var(--amb);background:rgba(226,162,59,.12)}
+  .tgl{background:var(--bg2);border:1px solid var(--line);color:var(--txt);width:38px;height:38px;border-radius:10px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:1.05rem}
+  .tgl:hover{border-color:var(--amb)}
+  .btn{display:inline-block;background:var(--amb);color:#1a1206;font-weight:600;padding:.6em 1.05em;border-radius:10px;font-family:Sora}
+  .btn.ghost{background:transparent;color:var(--txt);border:1px solid var(--line)}
+  @media(max-width:760px){nav .links a.sec{display:none}}
+  @media(max-width:520px){nav .wrap{gap:8px;padding:8px 14px;height:auto;flex-wrap:wrap} nav .links{gap:8px;margin-left:0;width:100%;justify-content:space-between} nav .btn{padding:.45em .7em;font-size:.82rem} .tgl{width:34px;height:34px}}
+  .hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+  .hero .glow{position:absolute;inset:-40% -20% auto auto;width:70%;height:600px;background:radial-gradient(closest-side,rgba(226,162,59,.22),transparent 70%);pointer-events:none}
+  .hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding:74px 22px}
+  .hero h1{font-size:clamp(2.2rem,5vw,3.5rem);font-weight:800;letter-spacing:-.025em}
+  .hero p.lead{font-size:1.18rem;color:var(--mut);margin:1.1em 0 1.6em;max-width:34ch}
+  .hero .cta{display:flex;gap:12px;flex-wrap:wrap}
+  .hero figure{margin:0;border-radius:16px;overflow:hidden;border:1px solid var(--line);box-shadow:0 30px 80px -30px #000}
+  .hero figure img{width:100%;display:block}
+  @media(max-width:780px){.hero .wrap{grid-template-columns:1fr;padding:48px 22px}}
+  section{padding:62px 0;border-bottom:1px solid var(--line)}
+  section h2{font-size:clamp(1.5rem,3.4vw,2.1rem);font-weight:800;letter-spacing:-.02em}
+  section .sub{color:var(--mut);margin:.6em 0 2em;max-width:62ch}
+  .grid{display:grid;gap:16px}
+  .g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)} .g2{grid-template-columns:repeat(2,1fr)}
+  @media(max-width:820px){.g3,.g4{grid-template-columns:1fr 1fr}}
+  @media(max-width:540px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+  .card h3{font-size:1.05rem;margin-bottom:.4em}
+  .card p{color:var(--mut);font-size:.92rem;margin:0}
+  .num{display:inline-flex;width:30px;height:30px;align-items:center;justify-content:center;border-radius:8px;background:rgba(226,162,59,.14);color:var(--amb);font-family:Sora;font-weight:800;font-size:.9rem;margin-bottom:.7em}
+  .flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+  .flow span{background:var(--bg2);border:1px solid var(--line);border-radius:999px;padding:.45em .9em;font-size:.85rem;font-family:Sora;font-weight:600}
+  .flow .arr{color:var(--amb);border:none;background:none;padding:0 .1em}
+  pre{background:#0a0a0e;border:1px solid var(--line);border-radius:12px;padding:16px 18px;overflow:auto;font-size:.86rem;line-height:1.6;color:#d6d6e0}
+  pre .c{color:#6f6f7c} pre .k{color:var(--amb2)} pre .s{color:#9ece6a}
+  .step{display:grid;grid-template-columns:46px minmax(0,1fr);gap:16px;margin-bottom:26px}
+  .step>div,.card{min-width:0}
+  p code,li code,td code{overflow-wrap:anywhere}
+  .step .b{width:46px;height:46px;border-radius:12px;background:var(--amb);color:#1a1206;font-family:Sora;font-weight:800;font-size:1.25rem;display:flex;align-items:center;justify-content:center}
+  .step h3{font-size:1.12rem;margin-bottom:.3em}
+  .step p{color:var(--mut);margin:.2em 0 .7em}
+  .ex{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:680px){.ex{grid-template-columns:1fr}}
+  .ex figure{margin:0;border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+  .ex figure img{width:100%;display:block}
+  .ex figcaption{padding:12px 14px;font-size:.88rem;color:var(--mut);background:var(--card)}
+  .phase{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--line)}
+  .phase:last-child{border:none}
+  .phase .tag{flex:0 0 92px;font-family:Sora;font-weight:800;color:var(--amb)}
+  .phase .d strong{display:block;margin-bottom:.2em}
+  .phase .d span{color:var(--mut);font-size:.92rem}
+  footer{padding:46px 0;text-align:center;color:var(--mut);font-size:.9rem}
+  .pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:.3em .8em;font-size:.78rem;color:var(--mut);margin:0 4px}
+  .tbl{width:100%;border-collapse:collapse;font-size:.9rem;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .tbl th,.tbl td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  .tbl th{font-family:Sora;font-size:.8rem;letter-spacing:.04em;color:var(--amb);background:var(--bg2)}
+  .tbl td{color:var(--mut)} .tbl td:first-child{color:var(--txt);font-weight:600;white-space:nowrap}
+  .tbl tr:last-child td{border-bottom:none}
+  .tblwrap{overflow-x:auto;border-radius:14px}
+  .note{border-left:3px solid var(--amb);background:var(--card);padding:12px 16px;border-radius:0 12px 12px 0;color:var(--mut);font-size:.92rem;margin-top:18px}
+  .exbox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;min-width:0}
+  .exbox h3{font-size:1.05rem;margin-bottom:.4em}
+  .exbox p{color:var(--mut);font-size:.92rem;margin:.2em 0 .8em}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <a class="brand" href="#top"><span class="emoji">🧰</span> Agent Runtime</a>
+  <span class="sep">|</span>
+  <span class="clubpro">
+    <a class="inema" href="https://inema.club" target="_blank" rel="noopener">INEMA.CLUB</a>
+    <span class="sep">-</span>
+    <a class="pro" href="https://inema.pro" target="_blank" rel="noopener">PRO</a>
+  </span>
+  <div class="links">
+    <a class="sec" href="#oque">What it is</a>
+    <a class="sec" href="#fluxo">How it works</a>
+    <a class="sec" href="#guia">User guide</a>
+    <a class="sec" href="#exemplos">Examples</a>
+    <a class="sec" href="#roadmap">Roadmap</a>
+    <span class="lang"><a href="../">PT</a><a class="on" href="./">EN</a><a href="../es/">ES</a></span>
+    <button class="tgl" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">🌙</button>
+    <a class="btn" href="https://github.com/inematds/inema-agent-runtime" target="_blank" rel="noopener">GitHub</a>
+  </div>
+</div></nav>
+
+<header class="hero" id="top">
+  <div class="glow"></div>
+  <div class="wrap">
+    <div>
+      <span class="chip">Copyable kit · Claude Code + Codex · through your subscription</span>
+      <h1>Your agents using the tools you <span class="amb">already have</span></h1>
+      <p class="lead">A <code>runtime/</code> folder that teaches Claude Code and Codex to discover, connect to, and use your systems, with clear rules on what they can do on their own. No server, no paid API.</p>
+      <div class="cta">
+        <a class="btn" href="#guia">Start the guide</a>
+        <a class="btn ghost" href="https://github.com/inematds/inema-agent-runtime" target="_blank" rel="noopener">View on GitHub</a>
+      </div>
+    </div>
+    <figure><img src="../assets/banner-en.jpg" alt="INEMA Agent Runtime banner: agents using your tools through your subscription and with a permissions policy"></figure>
+  </div>
+</header>
+
+<section id="oque"><div class="wrap">
+  <span class="chip">What it is</span>
+  <h2>A kit, not a platform</h2>
+  <p class="sub">Four policy files, diagnostic and verification scripts, bridges, a guard, and 7 tested recipes. Copy them into your project and your agents will follow the same rules. The files inside <code>runtime/</code> are written in Portuguese; your agent reads them and answers in your language.</p>
+  <figure style="margin:0 0 26px;border-radius:16px;overflow:hidden;border:1px solid var(--line);box-shadow:0 30px 80px -30px #000"><img src="../assets/banner-grade-en.jpg" alt="The kit's building blocks: access ladder, capabilities, policy, routing, MCP bridge, and recipes" loading="lazy" style="width:100%;display:block"></figure>
+  <div class="grid g3">
+    <div class="card"><h3>🪜 Access ladder</h3><p>Before saying "impossible," the agent climbs the ladder API → MCP → CLI → SDK → computer use → local bridge and uses the most stable available path.</p></div>
+    <div class="card"><h3>🛡️ Permissions policy</h3><p>Reading is unrestricted; it changes files and tells you; sending requires asking first; spending money or deleting data is prepared only. <code>.claude/settings.json</code> already blocks <code>rm -rf</code>.</p></div>
+    <div class="card"><h3>💳 Through your subscription</h3><p>Uses the Claude Code and Codex CLI you are already logged into. No paid API is required. Ollama local models are optional.</p></div>
+  </div>
+</div></section>
+
+<section id="fluxo"><div class="wrap">
+  <span class="chip">How it works</span>
+  <h2>The runtime cycle</h2>
+  <p class="sub">Each step has a file. Every action passes through <code>POLITICA.md</code>.</p>
+  <div class="flow">
+    <span>Discover</span><span class="arr">→</span>
+    <span>Connect</span><span class="arr">→</span>
+    <span>Route</span><span class="arr">→</span>
+    <span>Execute</span><span class="arr">→</span>
+    <span>Observe</span><span class="arr">→</span>
+    <span>Verify</span><span class="arr">→</span>
+    <span>Learn</span>
+  </div>
+  <div class="grid g4" style="margin-top:28px">
+    <div class="card"><div class="num">1</div><h3>CAPACIDADES.md</h3><p>Tool map: one line per system, with the access path, level, and test date. A system without an entry is not used.</p></div>
+    <div class="card"><div class="num">2</div><h3>POLITICA.md</h3><p>Autonomy levels N0 to N4 and the ceiling for each action type. "Always allow" never exceeds the ceiling.</p></div>
+    <div class="card"><div class="num">3</div><h3>ROTEAMENTO.md</h3><p>Which model for which task (super, top, executor, smaller). Start with the smallest model that can handle it.</p></div>
+    <div class="card"><div class="num">4</div><h3>LEIA-ME.md</h3><p>The cycle, the getting-started order, and the access ladder with examples.</p></div>
+  </div>
+
+  <h3 style="margin:42px 0 14px;font-size:1.2rem">The access ladder (use the highest available level)</h3>
+  <div class="tblwrap"><table class="tbl">
+    <tr><th>Level</th><th>Path</th><th>Example</th><th>Stability</th></tr>
+    <tr><td>1</td><td>Official API</td><td>ERP API</td><td>high</td></tr>
+    <tr><td>2</td><td>MCP</td><td><code>claude mcp list</code></td><td>high</td></tr>
+    <tr><td>3</td><td>CLI</td><td><code>codex exec</code>, <code>gh</code>, <code>git</code></td><td>high</td></tr>
+    <tr><td>4</td><td>SDK / library</td><td>npm/pip package</td><td>medium</td></tr>
+    <tr><td>5</td><td>Computer use</td><td>automated browser, on-screen clicks</td><td>low</td></tr>
+    <tr><td>6</td><td>Local bridge</td><td>CSV export, folder, SQLite database, local port</td><td>medium</td></tr>
+    <tr><td>7</td><td>Reverse engineering</td><td>observe the app running to find the access path</td><td><strong>lab only</strong>: breaks at the next update</td></tr>
+  </table></div>
+
+  <h3 style="margin:42px 0 14px;font-size:1.2rem">Ceiling by action type</h3>
+  <div class="tblwrap"><table class="tbl">
+    <tr><th>Action</th><th>Ceiling</th><th>In Claude Code</th><th>In Codex</th></tr>
+    <tr><td>Read a file, page, or spreadsheet</td><td>N4</td><td>allowed</td><td><code>-s read-only</code></td></tr>
+    <tr><td>Create/change a project file</td><td>N3</td><td><code>acceptEdits</code></td><td><code>-s workspace-write</code></td></tr>
+    <tr><td>Command that changes the system</td><td>N2</td><td>asks for confirmation</td><td>no auto-approval</td></tr>
+    <tr><td>Send (email, message, post, push)</td><td>N2</td><td>asks for confirmation</td><td>no auto-approval</td></tr>
+    <tr><td>Spend money or credits</td><td>N1</td><td>blocked</td><td>do not execute</td></tr>
+    <tr><td>Delete data / production</td><td>N1 + backup</td><td>blocked (<code>rm -rf</code>)</td><td>do not execute</td></tr>
+  </table></div>
+  <p class="note">N0 only chats · N1 prepares and the human executes · N2 executes after asking · N3 executes and tells you · N4 executes without notice. The agent does not change its own rules: it proposes a row in the "Learning" table of <code>POLITICA.md</code>, and you approve it.</p>
+</div></section>
+
+<section id="pre"><div class="wrap">
+  <span class="chip">Prerequisites</span>
+  <h2>What needs to be installed</h2>
+  <p class="sub">Linux or Mac. On Windows, use WSL. The diagnostic only reads local versions and status: it does not call a model or API.</p>
+  <div class="grid g3">
+    <div class="card"><h3>Node 18+</h3><p>Runs the diagnostic, the MCP bridge, and the observe and verify scripts.</p><pre><span class="k">node</span> --version</pre></div>
+    <div class="card"><h3>Claude Code and/or Codex</h3><p>At least one of the two, logged in through your subscription.</p><pre><span class="k">npm</span> i -g @anthropic-ai/claude-code
+<span class="k">npm</span> i -g @openai/codex
+<span class="k">codex</span> login</pre></div>
+    <div class="card"><h3>Ollama (optional)</h3><p>Free local models for lightweight tasks. The diagnostic shows whether it is installed.</p><pre><span class="k">ollama</span> --version</pre></div>
+  </div>
+</div></section>
+
+<section id="guia"><div class="wrap">
+  <span class="chip">User guide · step by step</span>
+  <h2>From clone to your first agent team</h2>
+  <p class="sub">Each recipe ends with <strong>proof</strong>: a command and the output that should appear. If the proof does not match, the step is not ready.</p>
+
+  <div class="step"><div class="b">1</div><div>
+    <h3>Copy the kit and run the diagnostic</h3>
+    <p>Shows what is installed and logged in: Node, Claude Code, Codex, and Ollama.</p>
+<pre><span class="k">git clone</span> <span class="s">https://github.com/inematds/inema-agent-runtime</span> meu-projeto
+<span class="k">cd</span> meu-projeto
+<span class="k">node</span> runtime/scripts/doctor.mjs   <span class="c"># proof: PRONTO at the end</span></pre>
+  </div></div>
+
+  <div class="step"><div class="b">2</div><div>
+    <h3>Fill in the capabilities map with the agent</h3>
+    <p>Open <code>claude</code> (or <code>codex</code>) in the folder and ask it to climb the ladder level by level. Only add an entry after a test has passed.</p>
+<pre><span class="c"># inside claude or codex:</span>
+<span class="s">Read runtime/LEIA-ME.md and help me fill in CAPACIDADES.md for my work.</span></pre>
+  </div></div>
+
+  <div class="step"><div class="b">3</div><div>
+    <h3>R1 · Claude uses Codex</h3>
+    <p>CLI bridge (level 3). By default, Codex only reads; changing files (N3) requires passing <code>workspace-write</code>.</p>
+<pre><span class="k">chmod</span> +x runtime/pontes/codex-exec.sh
+runtime/pontes/codex-exec.sh <span class="s">"Reply with PONG only"</span>   <span class="c"># proof: PONG</span>
+runtime/pontes/codex-exec.sh <span class="s">"Create notas.txt with the word OK"</span> <span class="s">"$PWD"</span> workspace-write</pre>
+  </div></div>
+
+  <div class="step"><div class="b">4</div><div>
+    <h3>R2 · Three-role team</h3>
+    <p>Planner (opus), executor (sonnet), and reviewer (haiku), defined in <code>.claude/agents/</code>. Each uses the model it needs, so you get more out of your quota.</p>
+<pre><span class="k">claude</span> -p <span class="s">"Use the team (planner, executor, reviewer). Task: create saudacao.txt with the sentence 'Olá, comunidade INEMA'. Finish with the reviewer's response."</span>
+<span class="c"># proof: saudacao.txt contains the sentence and the response ends with APROVADO</span></pre>
+  </div></div>
+
+  <div class="step"><div class="b">5</div><div>
+    <h3>R3 · MCP bridge for a system without an API</h3>
+    <p>The ERP or calendar exports a file; the bridge reads that file and provides it to the agent as a read-only tool. Dependency-free MCP server, already registered in <code>.mcp.json</code>.</p>
+<pre><span class="k">node</span> runtime/pontes/mcp-modelo/server.mjs --selftest   <span class="c"># proof: tools: 2 and TOTAL: R$ 856.00</span>
+<span class="k">claude</span> mcp list                                         <span class="c"># ponte-modelo … Connected</span>
+<span class="k">codex</span> mcp add ponte-modelo -- node <span class="s">"$PWD/runtime/pontes/mcp-modelo/server.mjs"</span></pre>
+  </div></div>
+
+  <div class="step"><div class="b">6</div><div>
+    <h3>R4 · Team in the background</h3>
+    <p>Several Claude sessions at once, each with a name, role, and model. Mark the folder as trusted once. Each session uses your quota.</p>
+<pre><span class="k">claude</span> --bg --permission-mode plan --name reviewer <span class="s">"Read runtime/POLITICA.md and answer in one line what the ceiling for 'Enviar' is."</span>
+<span class="k">claude</span> --bg --model sonnet --name executor <span class="s">"Create resumo.md with 3 lines about what this kit is."</span>
+<span class="k">node</span> runtime/scripts/observar.mjs   <span class="c"># table with id, type, name, and state</span></pre>
+  </div></div>
+
+  <div class="step"><div class="b">7</div><div>
+    <h3>R5 · Browser with a policy</h3>
+    <p>For systems that exist only as websites. Reading a page is N4; filling in or sending requires asking first; never make payments.</p>
+<pre><span class="k">npm</span> i -g agent-browser
+<span class="k">agent-browser</span> install
+<span class="k">agent-browser</span> open <span class="s">https://example.com</span>
+<span class="k">agent-browser</span> get title   <span class="c"># proof: Example Domain</span>
+<span class="k">agent-browser</span> close</pre>
+  </div></div>
+
+  <div class="step"><div class="b">8</div><div>
+    <h3>R6 · Long-running agent with verification</h3>
+    <p>The agent only finishes when the goal's <code>command → expected output</code> criteria pass, not when it thinks it is done.</p>
+<pre><span class="k">node</span> runtime/scripts/verificar.mjs runtime/exemplos/goal-exemplo.md
+<span class="c"># proof: 4/4 criteria OK and exit 0; break a criterion and the line becomes FALHA</span></pre>
+  </div></div>
+
+  <div class="step"><div class="b">9</div><div>
+    <h3>R7 · Guard and dashboard</h3>
+    <p>With several agents running at once, the <strong>guard</strong> catches two risks before they happen, and never decides on its own: it asks (N2). <strong>Collision</strong>: before editing a file another session edited, or that changed externally (Codex, editor, another person) in the last 30 min. <strong>Blast radius</strong>: before <code>rm</code> or <code>git clean</code>, it shows how many files would be deleted, their size, and the first paths. It is already enabled in this kit through <code>.claude/settings.json</code>; to bring it to another project, use <strong>one</strong> of these methods: the command below or copy the <code>hooks</code> block from <code>.claude/settings.json</code> and change the path.</p>
+<pre><span class="c"># guard in another project (this session only)</span>
+<span class="k">claude</span> --plugin-dir /caminho/do/kit/runtime/mods/runtime-guarda
+<span class="c"># optional dashboard: in the session, type /painel</span>
+<span class="k">claude</span> --plugin-dir runtime/mods/runtime-painel
+<span class="k">claude</span> plugin test runtime/mods/runtime-painel   <span class="c"># proof: 1 pass</span></pre>
+    <p>The dashboard lists <code>claude --bg</code> sessions (name, state, minutes), with <strong>Refresh</strong> and <strong>Stop</strong>: only your click stops a session. <code>INEMA_COLISAO_MIN=60</code> changes the collision window. Codex does not yet have an equivalent "before editing" hook: collision protection covers Claude sessions and detects edits made by Codex through the file date.</p>
+  </div></div>
+</div></section>
+
+<section id="exemplos"><div class="wrap">
+  <span class="chip">Examples</span>
+  <h2>From the office to the clinic</h2>
+  <p class="sub">The example files in <code>runtime/exemplos/</code> simulate the community's two most common cases: a system without an API that exports a spreadsheet.</p>
+  <div class="grid g2">
+    <div class="exbox">
+      <h3>🧾 Accountant with an ERP without an API</h3>
+      <p>The ERP exports a sales CSV. The bridge exposes the <code>resumo_vendas</code> tool; the R2 team puts together the summary and the reviewer checks the totals.</p>
+<pre><span class="c"># runtime/exemplos/erp-vendas.csv</span>
+data,cliente,produto,quantidade,valor_unitario
+2026-10-01,Mercado Sol,Café 500g,10,18.50
+<span class="c"># bridge selftest → TOTAL: R$ 856.00</span></pre>
+    </div>
+    <div class="exbox">
+      <h3>🩺 Clinic with a spreadsheet calendar</h3>
+      <p>The schedule lives in a spreadsheet. The <code>listar_horarios_livres</code> tool returns only <code>livre</code> rows, filtered by date and professional.</p>
+<pre><span class="k">claude</span> -p <span class="s">"Use the listar_horarios_livres tool from ponte-modelo and list the free appointment times for 2026-10-07."</span>
+<span class="c"># proof: 08:00 (Dra. Ana) and 16:00 (Dr. Bruno)</span></pre>
+    </div>
+  </div>
+  <p class="note">To use it with your system: set <code>PONTE_DADOS=/caminho/da/exportacao</code> in the <code>env</code> field of <code>.mcp.json</code>, change the columns used in <code>run()</code>, keep the tools read-only, and note the bridge in <code>CAPACIDADES.md</code> with the test date.</p>
+</div></section>
+
+<section id="roadmap"><div class="wrap">
+  <span class="chip">Roadmap</span>
+  <h2>Phases, each with proof</h2>
+  <p class="sub">Each phase closes only when its proofs pass. The proofs run for each version are listed in <code>CHANGELOG.md</code>.</p>
+  <div class="phase"><div class="tag">Phase 1</div><div class="d"><strong>Minimal kit · 0.1.0 · ready</strong><span>Four convention files, diagnostic, <code>codex-exec.sh</code> bridge, R1 and R2 recipes, and blocks in <code>.claude/settings.json</code>. Proofs run on Linux through the subscription.</span></div></div>
+  <div class="phase"><div class="tag">Phase 2</div><div class="d"><strong>Bridges, observe, and verify · 0.2.0 · ready</strong><span>Dependency-free MCP bridge, <code>observar.mjs</code>, <code>verificar.mjs</code>, and recipes R3 to R6.</span></div></div>
+  <div class="phase"><div class="tag">Phase 3</div><div class="d"><strong>Guard and dashboard · 0.3.0 · ready</strong><span><code>runtime-guarda</code> mod (collision and blast radius, already enabled in the kit), optional <code>runtime-painel</code> mod with <code>/painel</code>, and recipe R7.</span></div></div>
+</div></section>
+
+<footer>
+  <div class="wrap">
+    <div class="pill">Node 18+</div><div class="pill">Claude Code</div><div class="pill">Codex CLI</div><div class="pill">MCP</div>
+    <p style="margin-top:18px">INEMA Agent Runtime 0.3.0 · MIT license ·
+      <a href="https://github.com/inematds/inema-agent-runtime">inematds/inema-agent-runtime</a> ·
+      <a href="https://inema.club">INEMA.CLUB</a></p>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    var KEY='inema-agent-runtime-theme';
+    var b=document.body, t=document.getElementById('themeToggle');
+    try{ if(localStorage.getItem(KEY)==='light'){ b.classList.add('light'); t.textContent='☀️'; } }catch(e){}
+    t.addEventListener('click',function(){
+      var light=b.classList.toggle('light');
+      t.textContent=light?'☀️':'🌙';
+      try{ localStorage.setItem(KEY, light?'light':'dark'); }catch(e){}
+    });
+  })();
+</script>
+</body>
+</html>

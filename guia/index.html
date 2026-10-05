@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>INEMA Agent Runtime — seus agentes usando as ferramentas que você já tem</title>
+<meta name="description" content="Kit copiável para o Claude Code e o Codex descobrirem, conectarem e usarem suas ferramentas com política de permissões. Funciona pela assinatura, sem API paga.">
+<link rel="alternate" hreflang="pt-BR" href="https://inematds.github.io/inema-agent-runtime/guia/">
+<link rel="alternate" hreflang="en" href="https://inematds.github.io/inema-agent-runtime/guia/en/">
+<link rel="alternate" hreflang="es" href="https://inematds.github.io/inema-agent-runtime/guia/es/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c0c10; --bg2:#14141b; --card:#16161e; --line:#272730;
+    --txt:#e9e9ee; --mut:#9a9aa6; --amb:#E2A23B; --amb2:#f0c070; --sky:#38bdf8; --pro:#cbd5e1;
+    color-scheme:dark;
+  }
+  body.light{
+    --bg:#f6f7f9; --bg2:#eceef2; --card:#ffffff; --line:#e1e3ea;
+    --txt:#1a1a22; --mut:#5b5b68; --amb:#b9791d; --amb2:#a16207; --sky:#0369a1; --pro:#b45309;
+    color-scheme:light;
+  }
+  body.light .hero .glow{opacity:.5}
+  body.light pre{background:#0e0e14;color:#d6d6e0}
+  body.light pre .c{color:#8a8a98}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.65 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:Sora,sans-serif;line-height:1.15;margin:0}
+  a{color:var(--amb);text-decoration:none}
+  code,pre{font-family:"JetBrains Mono",monospace}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 22px}
+  .mut{color:var(--mut)} .amb{color:var(--amb)}
+  .chip{display:inline-block;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--amb);font-weight:600;font-family:Sora}
+  nav{position:sticky;top:0;z-index:30;backdrop-filter:blur(12px);background:rgba(12,12,16,.78);border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex;align-items:center;gap:22px;height:60px}
+  nav .brand{display:flex;align-items:center;gap:8px;font-family:Sora;font-weight:800;letter-spacing:-.02em;color:var(--amb)}
+  nav .brand .emoji{font-size:1.25rem}
+  nav .sep{color:var(--mut);opacity:.45}
+  nav .inema{color:var(--sky);font-weight:600;font-size:.88rem;font-family:Sora}
+  nav .inema:hover{filter:brightness(1.15)}
+  nav .pro{color:var(--pro);font-weight:600;font-size:.88rem;font-family:Sora}
+  nav .pro:hover{filter:brightness(1.15)}
+  nav .clubpro{display:inline-flex;align-items:center;gap:6px}
+  nav .links{margin-left:auto;display:flex;align-items:center;gap:20px;font-size:.92rem}
+  nav .links a.sec{color:var(--mut)} nav .links a.sec:hover{color:var(--txt)}
+  .lang{display:inline-flex;gap:2px;font-family:Sora;font-size:.78rem}
+  .lang a{color:var(--mut);padding:.2em .45em;border-radius:6px} .lang a.on{color:var(--amb);background:rgba(226,162,59,.12)}
+  .tgl{background:var(--bg2);border:1px solid var(--line);color:var(--txt);width:38px;height:38px;border-radius:10px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:1.05rem}
+  .tgl:hover{border-color:var(--amb)}
+  .btn{display:inline-block;background:var(--amb);color:#1a1206;font-weight:600;padding:.6em 1.05em;border-radius:10px;font-family:Sora}
+  .btn.ghost{background:transparent;color:var(--txt);border:1px solid var(--line)}
+  @media(max-width:760px){nav .links a.sec{display:none}}
+  @media(max-width:520px){nav .wrap{gap:8px;padding:8px 14px;height:auto;flex-wrap:wrap} nav .links{gap:8px;margin-left:0;width:100%;justify-content:space-between} nav .btn{padding:.45em .7em;font-size:.82rem} .tgl{width:34px;height:34px}}
+  .hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+  .hero .glow{position:absolute;inset:-40% -20% auto auto;width:70%;height:600px;background:radial-gradient(closest-side,rgba(226,162,59,.22),transparent 70%);pointer-events:none}
+  .hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding:74px 22px}
+  .hero h1{font-size:clamp(2.2rem,5vw,3.5rem);font-weight:800;letter-spacing:-.025em}
+  .hero p.lead{font-size:1.18rem;color:var(--mut);margin:1.1em 0 1.6em;max-width:34ch}
+  .hero .cta{display:flex;gap:12px;flex-wrap:wrap}
+  .hero figure{margin:0;border-radius:16px;overflow:hidden;border:1px solid var(--line);box-shadow:0 30px 80px -30px #000}
+  .hero figure img{width:100%;display:block}
+  @media(max-width:780px){.hero .wrap{grid-template-columns:1fr;padding:48px 22px}}
+  section{padding:62px 0;border-bottom:1px solid var(--line)}
+  section h2{font-size:clamp(1.5rem,3.4vw,2.1rem);font-weight:800;letter-spacing:-.02em}
+  section .sub{color:var(--mut);margin:.6em 0 2em;max-width:62ch}
+  .grid{display:grid;gap:16px}
+  .g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)} .g2{grid-template-columns:repeat(2,1fr)}
+  @media(max-width:820px){.g3,.g4{grid-template-columns:1fr 1fr}}
+  @media(max-width:540px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+  .card h3{font-size:1.05rem;margin-bottom:.4em}
+  .card p{color:var(--mut);font-size:.92rem;margin:0}
+  .num{display:inline-flex;width:30px;height:30px;align-items:center;justify-content:center;border-radius:8px;background:rgba(226,162,59,.14);color:var(--amb);font-family:Sora;font-weight:800;font-size:.9rem;margin-bottom:.7em}
+  .flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+  .flow span{background:var(--bg2);border:1px solid var(--line);border-radius:999px;padding:.45em .9em;font-size:.85rem;font-family:Sora;font-weight:600}
+  .flow .arr{color:var(--amb);border:none;background:none;padding:0 .1em}
+  pre{background:#0a0a0e;border:1px solid var(--line);border-radius:12px;padding:16px 18px;overflow:auto;font-size:.86rem;line-height:1.6;color:#d6d6e0}
+  pre .c{color:#6f6f7c} pre .k{color:var(--amb2)} pre .s{color:#9ece6a}
+  .step{display:grid;grid-template-columns:46px minmax(0,1fr);gap:16px;margin-bottom:26px}
+  .step>div,.card{min-width:0}
+  p code,li code,td code{overflow-wrap:anywhere}
+  .step .b{width:46px;height:46px;border-radius:12px;background:var(--amb);color:#1a1206;font-family:Sora;font-weight:800;font-size:1.25rem;display:flex;align-items:center;justify-content:center}
+  .step h3{font-size:1.12rem;margin-bottom:.3em}
+  .step p{color:var(--mut);margin:.2em 0 .7em}
+  .ex{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:680px){.ex{grid-template-columns:1fr}}
+  .ex figure{margin:0;border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+  .ex figure img{width:100%;display:block}
+  .ex figcaption{padding:12px 14px;font-size:.88rem;color:var(--mut);background:var(--card)}
+  .phase{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--line)}
+  .phase:last-child{border:none}
+  .phase .tag{flex:0 0 92px;font-family:Sora;font-weight:800;color:var(--amb)}
+  .phase .d strong{display:block;margin-bottom:.2em}
+  .phase .d span{color:var(--mut);font-size:.92rem}
+  footer{padding:46px 0;text-align:center;color:var(--mut);font-size:.9rem}
+  .pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:.3em .8em;font-size:.78rem;color:var(--mut);margin:0 4px}
+  .tbl{width:100%;border-collapse:collapse;font-size:.9rem;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .tbl th,.tbl td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  .tbl th{font-family:Sora;font-size:.8rem;letter-spacing:.04em;color:var(--amb);background:var(--bg2)}
+  .tbl td{color:var(--mut)} .tbl td:first-child{color:var(--txt);font-weight:600;white-space:nowrap}
+  .tbl tr:last-child td{border-bottom:none}
+  .tblwrap{overflow-x:auto;border-radius:14px}
+  .note{border-left:3px solid var(--amb);background:var(--card);padding:12px 16px;border-radius:0 12px 12px 0;color:var(--mut);font-size:.92rem;margin-top:18px}
+  .exbox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;min-width:0}
+  .exbox h3{font-size:1.05rem;margin-bottom:.4em}
+  .exbox p{color:var(--mut);font-size:.92rem;margin:.2em 0 .8em}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <a class="brand" href="#top"><span class="emoji">🧰</span> Agent Runtime</a>
+  <span class="sep">|</span>
+  <span class="clubpro">
+    <a class="inema" href="https://inema.club" target="_blank" rel="noopener">INEMA.CLUB</a>
+    <span class="sep">-</span>
+    <a class="pro" href="https://inema.pro" target="_blank" rel="noopener">PRO</a>
+  </span>
+  <div class="links">
+    <a class="sec" href="#oque">O que é</a>
+    <a class="sec" href="#fluxo">Como funciona</a>
+    <a class="sec" href="#guia">Guia de uso</a>
+    <a class="sec" href="#exemplos">Exemplos</a>
+    <a class="sec" href="#roadmap">Roadmap</a>
+    <span class="lang"><a class="on" href="./">PT</a><a href="en/">EN</a><a href="es/">ES</a></span>
+    <button class="tgl" id="themeToggle" aria-label="Alternar tema" title="Alternar tema">🌙</button>
+    <a class="btn" href="https://github.com/inematds/inema-agent-runtime" target="_blank" rel="noopener">GitHub</a>
+  </div>
+</div></nav>
+
+<header class="hero" id="top">
+  <div class="glow"></div>
+  <div class="wrap">
+    <div>
+      <span class="chip">Kit copiável · Claude Code + Codex · pela assinatura</span>
+      <h1>Seus agentes usando as ferramentas que você <span class="amb">já tem</span></h1>
+      <p class="lead">Uma pasta <code>runtime/</code> que ensina o Claude Code e o Codex a descobrir, conectar e usar seus sistemas, com regras claras do que podem fazer sozinhos. Sem servidor, sem API paga.</p>
+      <div class="cta">
+        <a class="btn" href="#guia">Começar o guia</a>
+        <a class="btn ghost" href="https://github.com/inematds/inema-agent-runtime" target="_blank" rel="noopener">Ver no GitHub</a>
+      </div>
+    </div>
+    <figure><img src="assets/banner.jpg" alt="Banner do INEMA Agent Runtime: agentes que usam suas ferramentas, pela assinatura e com política de permissões"></figure>
+  </div>
+</header>
+
+<section id="oque"><div class="wrap">
+  <span class="chip">O que é</span>
+  <h2>Um kit, não uma plataforma</h2>
+  <p class="sub">Quatro arquivos de regras, scripts de diagnóstico e verificação, pontes, uma guarda e 7 receitas testadas. Você copia para o seu projeto e os agentes passam a seguir as mesmas regras.</p>
+  <figure style="margin:0 0 26px;border-radius:16px;overflow:hidden;border:1px solid var(--line);box-shadow:0 30px 80px -30px #000"><img src="assets/banner-grade.jpg" alt="Os blocos do kit: escada de vias, capacidades, política, roteamento, ponte MCP e receitas" loading="lazy" style="width:100%;display:block"></figure>
+  <div class="grid g3">
+    <div class="card"><h3>🪜 Escada de vias</h3><p>Antes de dizer "impossível", o agente sobe a escada API → MCP → CLI → SDK → uso do computador → ponte local e usa a via mais estável que existir.</p></div>
+    <div class="card"><h3>🛡️ Política de permissões</h3><p>Ler é livre; alterar arquivo, ele faz e avisa; enviar pede antes; gastar dinheiro ou apagar dados, ele só prepara. O <code>.claude/settings.json</code> já bloqueia <code>rm -rf</code>.</p></div>
+    <div class="card"><h3>💳 Pela assinatura</h3><p>Usa o Claude Code e o Codex CLI que você já tem logados. Nenhuma API paga é pré-requisito. Modelos locais do Ollama são opcionais.</p></div>
+  </div>
+</div></section>
+
+<section id="fluxo"><div class="wrap">
+  <span class="chip">Como funciona</span>
+  <h2>O ciclo do runtime</h2>
+  <p class="sub">Cada etapa tem um arquivo. Toda ação passa pela <code>POLITICA.md</code>.</p>
+  <div class="flow">
+    <span>Descobrir</span><span class="arr">→</span>
+    <span>Conectar</span><span class="arr">→</span>
+    <span>Rotear</span><span class="arr">→</span>
+    <span>Executar</span><span class="arr">→</span>
+    <span>Observar</span><span class="arr">→</span>
+    <span>Verificar</span><span class="arr">→</span>
+    <span>Aprender</span>
+  </div>
+  <div class="grid g4" style="margin-top:28px">
+    <div class="card"><div class="num">1</div><h3>CAPACIDADES.md</h3><p>Mapa das ferramentas: uma linha por sistema, com a via, o nível e a data do teste. Sistema sem linha não é usado.</p></div>
+    <div class="card"><div class="num">2</div><h3>POLITICA.md</h3><p>Níveis de autonomia N0 a N4 e o teto de cada tipo de ação. "Sempre permitir" nunca passa do teto.</p></div>
+    <div class="card"><div class="num">3</div><h3>ROTEAMENTO.md</h3><p>Qual modelo para qual tarefa (super, topo, executor, menor). Comece no menor que resolve.</p></div>
+    <div class="card"><div class="num">4</div><h3>LEIA-ME.md</h3><p>O ciclo, a ordem para começar e a escada das vias com exemplos.</p></div>
+  </div>
+
+  <h3 style="margin:42px 0 14px;font-size:1.2rem">A escada das vias (use a mais alta que existir)</h3>
+  <div class="tblwrap"><table class="tbl">
+    <tr><th>Nível</th><th>Via</th><th>Exemplo</th><th>Estabilidade</th></tr>
+    <tr><td>1</td><td>API oficial</td><td>API do ERP</td><td>alta</td></tr>
+    <tr><td>2</td><td>MCP</td><td><code>claude mcp list</code></td><td>alta</td></tr>
+    <tr><td>3</td><td>CLI</td><td><code>codex exec</code>, <code>gh</code>, <code>git</code></td><td>alta</td></tr>
+    <tr><td>4</td><td>SDK / biblioteca</td><td>pacote npm/pip</td><td>média</td></tr>
+    <tr><td>5</td><td>Uso do computador</td><td>navegador automatizado, cliques na tela</td><td>baixa</td></tr>
+    <tr><td>6</td><td>Ponte local</td><td>exportação CSV, pasta, banco SQLite, porta local</td><td>média</td></tr>
+    <tr><td>7</td><td>Engenharia reversa</td><td>observar o app rodando para achar a via</td><td><strong>só laboratório</strong>: quebra na próxima atualização</td></tr>
+  </table></div>
+
+  <h3 style="margin:42px 0 14px;font-size:1.2rem">Teto por tipo de ação</h3>
+  <div class="tblwrap"><table class="tbl">
+    <tr><th>Ação</th><th>Teto</th><th>No Claude Code</th><th>No Codex</th></tr>
+    <tr><td>Ler arquivo, página, planilha</td><td>N4</td><td>permitido</td><td><code>-s read-only</code></td></tr>
+    <tr><td>Criar/alterar arquivo do projeto</td><td>N3</td><td><code>acceptEdits</code></td><td><code>-s workspace-write</code></td></tr>
+    <tr><td>Comando que altera o sistema</td><td>N2</td><td>pede confirmação</td><td>sem auto-aprovação</td></tr>
+    <tr><td>Enviar (e-mail, mensagem, post, push)</td><td>N2</td><td>pede confirmação</td><td>sem auto-aprovação</td></tr>
+    <tr><td>Gastar dinheiro ou crédito</td><td>N1</td><td>bloqueado</td><td>não executar</td></tr>
+    <tr><td>Apagar dados / produção</td><td>N1 + backup</td><td>bloqueado (<code>rm -rf</code>)</td><td>não executar</td></tr>
+  </table></div>
+  <p class="note">N0 só conversa · N1 prepara e o humano executa · N2 executa depois de pedir · N3 executa e avisa · N4 executa sem aviso. O agente não muda as próprias regras: ele propõe uma linha na tabela "Aprendizado" da <code>POLITICA.md</code> e você aprova.</p>
+</div></section>
+
+<section id="pre"><div class="wrap">
+  <span class="chip">Pré-requisitos</span>
+  <h2>O que precisa estar instalado</h2>
+  <p class="sub">Linux ou Mac. No Windows, use WSL. O diagnóstico só lê versões e status locais: não chama modelo nem API.</p>
+  <div class="grid g3">
+    <div class="card"><h3>Node 18+</h3><p>Roda o diagnóstico, a ponte MCP e os scripts de observar e verificar.</p><pre><span class="k">node</span> --version</pre></div>
+    <div class="card"><h3>Claude Code e/ou Codex</h3><p>Pelo menos um dos dois, logado pela assinatura.</p><pre><span class="k">npm</span> i -g @anthropic-ai/claude-code
+<span class="k">npm</span> i -g @openai/codex
+<span class="k">codex</span> login</pre></div>
+    <div class="card"><h3>Ollama (opcional)</h3><p>Modelos locais grátis para tarefas leves. O diagnóstico mostra se está presente.</p><pre><span class="k">ollama</span> --version</pre></div>
+  </div>
+</div></section>
+
+<section id="guia"><div class="wrap">
+  <span class="chip">Guia de uso · passo a passo</span>
+  <h2>Do clone ao primeiro time de agentes</h2>
+  <p class="sub">Cada receita termina com uma <strong>prova</strong>: um comando e a saída que tem de aparecer. Se a prova não bate, o passo não está pronto.</p>
+
+  <div class="step"><div class="b">1</div><div>
+    <h3>Copie o kit e rode o diagnóstico</h3>
+    <p>Mostra o que está instalado e logado: Node, Claude Code, Codex e Ollama.</p>
+<pre><span class="k">git clone</span> <span class="s">https://github.com/inematds/inema-agent-runtime</span> meu-projeto
+<span class="k">cd</span> meu-projeto
+<span class="k">node</span> runtime/scripts/doctor.mjs   <span class="c"># prova: PRONTO no fim</span></pre>
+  </div></div>
+
+  <div class="step"><div class="b">2</div><div>
+    <h3>Preencha o mapa de capacidades com o agente</h3>
+    <p>Abra <code>claude</code> (ou <code>codex</code>) na pasta e peça para subir a escada nível por nível. Só entra linha com teste feito.</p>
+<pre><span class="c"># dentro do claude ou do codex:</span>
+<span class="s">Leia runtime/LEIA-ME.md e me ajude a preencher o CAPACIDADES.md para o meu trabalho.</span></pre>
+  </div></div>
+
+  <div class="step"><div class="b">3</div><div>
+    <h3>R1 · Claude usa o Codex</h3>
+    <p>Ponte por CLI (nível 3). Por padrão o Codex só lê; alterar arquivos (N3) só se você passar <code>workspace-write</code>.</p>
+<pre><span class="k">chmod</span> +x runtime/pontes/codex-exec.sh
+runtime/pontes/codex-exec.sh <span class="s">"Responda apenas PONG"</span>   <span class="c"># prova: PONG</span>
+runtime/pontes/codex-exec.sh <span class="s">"Crie notas.txt com a palavra OK"</span> <span class="s">"$PWD"</span> workspace-write</pre>
+  </div></div>
+
+  <div class="step"><div class="b">4</div><div>
+    <h3>R2 · Time de três papéis</h3>
+    <p>Planejador (opus), executor (sonnet) e revisor (haiku), definidos em <code>.claude/agents/</code>. Cada um usa o modelo que precisa e a cota rende mais.</p>
+<pre><span class="k">claude</span> -p <span class="s">"Use o time (planejador, executor, revisor). Tarefa: crie saudacao.txt com a frase 'Olá, comunidade INEMA'. Termine com a resposta do revisor."</span>
+<span class="c"># prova: saudacao.txt tem a frase e a resposta termina com APROVADO</span></pre>
+  </div></div>
+
+  <div class="step"><div class="b">5</div><div>
+    <h3>R3 · Ponte MCP para um sistema sem API</h3>
+    <p>O ERP ou a agenda exportam arquivo; a ponte lê esse arquivo e entrega ao agente como ferramenta só de leitura. Servidor MCP sem dependências, já registrado no <code>.mcp.json</code>.</p>
+<pre><span class="k">node</span> runtime/pontes/mcp-modelo/server.mjs --selftest   <span class="c"># prova: tools: 2 e TOTAL: R$ 856.00</span>
+<span class="k">claude</span> mcp list                                         <span class="c"># ponte-modelo … Connected</span>
+<span class="k">codex</span> mcp add ponte-modelo -- node <span class="s">"$PWD/runtime/pontes/mcp-modelo/server.mjs"</span></pre>
+  </div></div>
+
+  <div class="step"><div class="b">6</div><div>
+    <h3>R4 · Time em segundo plano</h3>
+    <p>Várias sessões do Claude ao mesmo tempo, cada uma com nome, papel e modelo. Marque a pasta como confiável uma vez. Cada sessão consome a cota.</p>
+<pre><span class="k">claude</span> --bg --permission-mode plan --name revisor <span class="s">"Leia runtime/POLITICA.md e responda em uma linha qual é o teto de 'Enviar'."</span>
+<span class="k">claude</span> --bg --model sonnet --name executor <span class="s">"Crie resumo.md com 3 linhas sobre o que é este kit."</span>
+<span class="k">node</span> runtime/scripts/observar.mjs   <span class="c"># tabela com id, tipo, nome e estado</span></pre>
+  </div></div>
+
+  <div class="step"><div class="b">7</div><div>
+    <h3>R5 · Navegador com política</h3>
+    <p>Para sistemas que só existem como site. Ler página é N4; preencher ou enviar pede antes; pagar, nunca.</p>
+<pre><span class="k">npm</span> i -g agent-browser
+<span class="k">agent-browser</span> install
+<span class="k">agent-browser</span> open <span class="s">https://example.com</span>
+<span class="k">agent-browser</span> get title   <span class="c"># prova: Example Domain</span>
+<span class="k">agent-browser</span> close</pre>
+  </div></div>
+
+  <div class="step"><div class="b">8</div><div>
+    <h3>R6 · Agente longo com verificação</h3>
+    <p>O agente só termina quando os critérios <code>comando → saída esperada</code> do goal passam, e não quando ele acha que terminou.</p>
+<pre><span class="k">node</span> runtime/scripts/verificar.mjs runtime/exemplos/goal-exemplo.md
+<span class="c"># prova: 4/4 critérios OK e saída 0; quebre um critério e a linha vira FALHA</span></pre>
+  </div></div>
+
+  <div class="step"><div class="b">9</div><div>
+    <h3>R7 · Guarda e painel</h3>
+    <p>Com vários agentes ao mesmo tempo, a <strong>guarda</strong> pega dois riscos antes de acontecer, e nunca decide sozinha: ela pergunta (N2). <strong>Colisão</strong>: antes de editar um arquivo que outra sessão editou, ou que mudou por fora (Codex, editor, outra pessoa) nos últimos 30 min. <strong>Raio</strong>: antes de <code>rm</code> ou <code>git clean</code>, mostra quantos arquivos seriam apagados, o tamanho e os primeiros caminhos. Neste kit ela já vem ligada pelo <code>.claude/settings.json</code>; para levar a outro projeto, use <strong>um</strong> dos jeitos: o comando abaixo ou copiar o bloco <code>hooks</code> do <code>.claude/settings.json</code> trocando o caminho.</p>
+<pre><span class="c"># guarda em outro projeto (só nesta sessão)</span>
+<span class="k">claude</span> --plugin-dir /caminho/do/kit/runtime/mods/runtime-guarda
+<span class="c"># painel opcional: na sessão, digite /painel</span>
+<span class="k">claude</span> --plugin-dir runtime/mods/runtime-painel
+<span class="k">claude</span> plugin test runtime/mods/runtime-painel   <span class="c"># prova: 1 pass</span></pre>
+    <p>O painel lista as sessões do <code>claude --bg</code> (nome, estado, minutos), com <strong>Atualizar</strong> e <strong>Parar</strong>: só o seu clique para uma sessão. <code>INEMA_COLISAO_MIN=60</code> muda a janela da colisão. O Codex ainda não tem um gancho "antes de editar" equivalente: a colisão protege as sessões do Claude e detecta edições feitas pelo Codex pela data do arquivo.</p>
+  </div></div>
+</div></section>
+
+<section id="exemplos"><div class="wrap">
+  <span class="chip">Exemplos</span>
+  <h2>Do escritório ao consultório</h2>
+  <p class="sub">Os arquivos de exemplo em <code>runtime/exemplos/</code> simulam os dois casos mais comuns da comunidade: sistema sem API que exporta planilha.</p>
+  <div class="grid g2">
+    <div class="exbox">
+      <h3>🧾 Contador(a) com ERP sem API</h3>
+      <p>O ERP exporta um CSV de vendas. A ponte expõe a ferramenta <code>resumo_vendas</code>; o time da R2 monta o resumo e o revisor confere os totais.</p>
+<pre><span class="c"># runtime/exemplos/erp-vendas.csv</span>
+data,cliente,produto,quantidade,valor_unitario
+2026-10-01,Mercado Sol,Café 500g,10,18.50
+<span class="c"># selftest da ponte → TOTAL: R$ 856.00</span></pre>
+    </div>
+    <div class="exbox">
+      <h3>🩺 Clínica com agenda em planilha</h3>
+      <p>A agenda vive numa planilha. A ferramenta <code>listar_horarios_livres</code> devolve só as linhas <code>livre</code>, filtrando por data e profissional.</p>
+<pre><span class="k">claude</span> -p <span class="s">"Use a tool listar_horarios_livres da ponte-modelo e diga os horários livres de 2026-10-07."</span>
+<span class="c"># prova: 08:00 (Dra. Ana) e 16:00 (Dr. Bruno)</span></pre>
+    </div>
+  </div>
+  <p class="note">Para usar com o seu sistema: aponte <code>PONTE_DADOS=/caminho/da/exportacao</code> no campo <code>env</code> do <code>.mcp.json</code>, troque as colunas usadas em <code>run()</code>, mantenha as ferramentas só de leitura e anote a ponte no <code>CAPACIDADES.md</code> com a data do teste.</p>
+</div></section>
+
+<section id="roadmap"><div class="wrap">
+  <span class="chip">Roadmap</span>
+  <h2>Em fases, cada uma provada</h2>
+  <p class="sub">Cada fase só fecha quando as provas rodam. As provas rodadas de cada versão estão no <code>CHANGELOG.md</code>.</p>
+  <div class="phase"><div class="tag">Fase 1</div><div class="d"><strong>Kit mínimo · 0.1.0 · pronta</strong><span>Quatro arquivos de convenção, diagnóstico, ponte <code>codex-exec.sh</code>, receitas R1 e R2 e bloqueios no <code>.claude/settings.json</code>. Provas rodadas em Linux pela assinatura.</span></div></div>
+  <div class="phase"><div class="tag">Fase 2</div><div class="d"><strong>Pontes, observar e verificar · 0.2.0 · pronta</strong><span>Ponte MCP sem dependências, <code>observar.mjs</code>, <code>verificar.mjs</code> e receitas R3 a R6.</span></div></div>
+  <div class="phase"><div class="tag">Fase 3</div><div class="d"><strong>Guarda e painel · 0.3.0 · pronta</strong><span>Mod <code>runtime-guarda</code> (colisão e raio, já ligado no kit), mod opcional <code>runtime-painel</code> com <code>/painel</code> e receita R7.</span></div></div>
+</div></section>
+
+<footer>
+  <div class="wrap">
+    <div class="pill">Node 18+</div><div class="pill">Claude Code</div><div class="pill">Codex CLI</div><div class="pill">MCP</div>
+    <p style="margin-top:18px">INEMA Agent Runtime 0.3.0 · licença MIT ·
+      <a href="https://github.com/inematds/inema-agent-runtime">inematds/inema-agent-runtime</a> ·
+      <a href="https://inema.club">INEMA.CLUB</a></p>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    var KEY='inema-agent-runtime-theme';
+    var b=document.body, t=document.getElementById('themeToggle');
+    try{ if(localStorage.getItem(KEY)==='light'){ b.classList.add('light'); t.textContent='☀️'; } }catch(e){}
+    t.addEventListener('click',function(){
+      var light=b.classList.toggle('light');
+      t.textContent=light?'☀️':'🌙';
+      try{ localStorage.setItem(KEY, light?'light':'dark'); }catch(e){}
+    });
+  })();
+</script>
+</body>
+</html>
