@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "ponte-modelo": {
+      "command": "node",
+      "args": ["runtime/pontes/mcp-modelo/server.mjs"]
+    }
+  }
+}

@@ -1,0 +1,6 @@
+data,cliente,produto,quantidade,valor_unitario
+2026-10-01,Mercado Sol,Café 500g,10,18.50
+2026-10-01,Padaria Lua,Açúcar 1kg,25,5.20
+2026-10-02,Mercado Sol,Açúcar 1kg,40,5.20
+2026-10-03,Empório Mar,Café 500g,6,18.50
+2026-10-03,Padaria Lua,Café 500g,12,18.50
